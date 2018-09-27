@@ -16,14 +16,17 @@ class Snippet(models.Model):
     title = models.CharField(max_length=100, blank=True, default='')
     code = models.TextField()
     linenos = models.BooleanField(default=False)
-    language = models.CharField(choices=LANGUAGE_CHOICES, default='python', max_length=100)
-    style = models.CharField(choices=STYLE_CHOICES, default='friendly', max_length=100)
-    owner = models.ForeignKey('auth.User', related_name='snippets', on_delete=models.CASCADE)
+    language = models.CharField(
+        choices=LANGUAGE_CHOICES, default='python', max_length=100)
+    style = models.CharField(choices=STYLE_CHOICES,
+                             default='friendly', max_length=100)
+    owner = models.ForeignKey(
+        'auth.User', related_name='snippets', on_delete=models.CASCADE)
     highlighted = models.TextField()
 
     class Meta:
         ordering = ('created',)
-    
+
     def save(self, *args, **kwargs):
         """
         Use the `pygments` library to create a highlighted HTML
@@ -33,6 +36,6 @@ class Snippet(models.Model):
         linenos = 'table' if self.linenos else False
         options = {'title': self.title} if self.title else {}
         formatter = HtmlFormatter(style=self.style, linenos=linenos,
-                                full=True, **options)
+                                  full=True, **options)
         self.highlighted = highlight(self.code, lexer, formatter)
         super(Snippet, self).save(*args, **kwargs)

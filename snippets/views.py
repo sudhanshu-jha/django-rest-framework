@@ -22,13 +22,17 @@ class SnippetList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+
 class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a code snippet.
     """
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly)   # Adding permission classes
+    # Adding permission classes
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
+
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -36,6 +40,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
 
 class SnippetViewSet(viewsets.ModelViewSet):
     """
@@ -56,6 +61,7 @@ class SnippetViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
 class SnippetHighlight(generics.GenericAPIView):
     queryset = Snippet.objects.all()
